@@ -18,3 +18,9 @@
         return str.replace(/[\x00-\x7F]/g, '').split('');
       }
     }
+
+- id: backlinks
+  translation: バックリンク
+
+- id: no_backlinks
+  translation: バックリンクが見つかりません

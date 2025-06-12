@@ -1,30 +1,34 @@
-<h3>{{ i18n "backlinks" }}</h3>
-<ul class="backlinks">
+<fh3>{{ i18n "backlinks" }}</h3>
+  <ul class="backlinks">
     {{$url := urls.Parse .Site.BaseURL }}
     {{$host := strings.TrimRight "/" $url.Path }}
     {{$curPage := strings.TrimPrefix $host (strings.TrimRight "/" .Page.RelPermalink)}}
     {{$linkIndex := getJSON "/assets/indices/linkIndex.json"}}
-    {{$inbound := index $linkIndex.index.backlinks $curPage}}
     {{$contentTable := getJSON "/assets/indices/contentIndex.json"}}
-    {{if $inbound}}
-    {{$backlinks := dict "SENTINEL" "SENTINEL"}}
-    {{range $k, $v := $inbound}}
-      {{$cleanedInbound := replace $v.source " " "-"}}
-      {{$ctx := $v.text}}
-      {{$backlinks = merge $backlinks (dict $cleanedInbound $ctx)}}
+    {{$inbound := ""}}
+    {{range $key, $value := $linkIndex.index.backlinks}}
+    {{if eq (strings.ToLower $key) (strings.ToLower $curPage)}}
+    {{$inbound = $value}}
     {{end}}
-    {{- range $lnk, $ctx := $backlinks -}}
-      {{$l := printf "%s%s/" $host $lnk}}
-      {{$l = cond (eq $l "//") "/" $l}}
-      {{with (index $contentTable $lnk)}}
-      <li>
-        <a href="{{$l}}" data-ctx="{{$ctx}}" data-src="{{$lnk}}" class="internal-link">{{index (index . "title")}}</a>
-      </li>
-      {{end}}
-    {{- end -}}
-    {{else}}
+    {{end}}
+    {{if $inbound}}
+    {{range $k, $v := $inbound}}
+    {{$cleanedInbound := replace $v.source " " "-"}}
+    {{$ctx := $v.text}}
+    {{/* Convert to lowercase and URL decode for proper Hugo URL format */}}
+    {{$lowercaseUrl := strings.ToLower $cleanedInbound}}
+    {{$l := printf "%s%s/" $host $lowercaseUrl}}
+    {{$l = cond (eq $l "//") "/" $l}}
+    {{with (index $contentTable $cleanedInbound)}}
     <li>
-      {{ i18n "no_backlinks" }}
+      <a href="{{$l}}" data-ctx="{{$ctx}}" data-src="{{$lowercaseUrl}}"
+        class="internal-link">{{index (index . "title")}} <span class="context">({{$ctx}})</span></a>
     </li>
     {{end}}
-</ul>
+    {{end}}
+    {{else}}
+      <li>
+        {{ i18n "no_backlinks" }}
+      </li>
+      {{end}}
+  </ul>
