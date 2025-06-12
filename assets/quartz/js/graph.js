@@ -193,8 +193,20 @@ async function drawGraph(baseUrl, isHome, pathColors, graphConfig) {
 		.style("cursor", "pointer")
 		.on("click", (_, d) => {
 			// SPA navigation
+			let url = decodeURI(d.id).toLowerCase().replace(/\s+/g, "-");
+			// Remove leading slash if present
+			if (url.startsWith("/")) {
+				url = url.substring(1);
+			}
+			// Construct URL safely
+			let fullUrl;
+			if (baseUrl && baseUrl !== "/") {
+				fullUrl = `${baseUrl.replace(/\/$/, "")}/${url}/`;
+			} else {
+				fullUrl = `/${url}/`;
+			}
 			window.Million.navigate(
-				new URL(`${baseUrl}${decodeURI(d.id).replace(/\s+/g, "-")}/`),
+				new URL(fullUrl, window.location.origin),
 				".singlePage",
 			);
 		})
@@ -212,9 +224,18 @@ async function drawGraph(baseUrl, isHome, pathColors, graphConfig) {
 				.selectAll(".node")
 				.filter((d) => neighbours.includes(d.id));
 			const currentId = d.id;
-			window.Million.prefetch(
-				new URL(`${baseUrl}${decodeURI(d.id).replace(/\s+/g, "-")}/`),
-			);
+			let prefetchUrl = decodeURI(d.id).toLowerCase().replace(/\s+/g, "-");
+			if (prefetchUrl.startsWith("/")) {
+				prefetchUrl = prefetchUrl.substring(1);
+			}
+			// Construct prefetch URL safely
+			let fullPrefetchUrl;
+			if (baseUrl && baseUrl !== "/") {
+				fullPrefetchUrl = `${baseUrl.replace(/\/$/, "")}/${prefetchUrl}/`;
+			} else {
+				fullPrefetchUrl = `/${prefetchUrl}/`;
+			}
+			window.Million.prefetch(new URL(fullPrefetchUrl, window.location.origin));
 			const linkNodes = d3
 				.selectAll(".link")
 				.filter((d) => d.source.id === currentId || d.target.id === currentId);
