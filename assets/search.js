@@ -84,7 +84,7 @@
       const li = element('<li><a href></a><small></small></li>');
       const a = li.querySelector('a'), small = li.querySelector('small');
 
-      a.href = page.href;
+      a.href = page.href.toLowerCase();
       a.textContent = page.title;
       small.textContent = page.section;
 
@@ -102,3 +102,4 @@
     return div.firstChild;
   }
 })();
+

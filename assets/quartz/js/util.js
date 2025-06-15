@@ -127,7 +127,7 @@ const resultToHTML = ({ url, title, content }) => {
 const redir = (id, term) => {
 	const shouldTrim = PRODUCTION && SEARCH_ENABLED;
 	const baseURLPrefix = shouldTrim ? "" : BASE_URL.replace(/\/$/g, "");
-	const urlString = `${baseURLPrefix}${id}#:~:text=${encodeURIComponent(term)}/`;
+	const urlString = `${baseURLPrefix}${id}#:~:text=${encodeURIComponent(term)}`;
 	window.Million.navigate(new URL(urlString), ".singlePage");
 	closeSearch();
 };
@@ -161,10 +161,10 @@ function closeSearch() {
 const registerHandlers = (onInputFn) => {
 	const source = document.getElementById("search-bar");
 	const searchContainer = document.getElementById("search-container");
-	let term;
 	source.addEventListener("keyup", (e) => {
 		if (e.key === "Enter") {
 			const anchor = document.getElementsByClassName("result-card")[0];
+			const term = source.value;
 			redir(anchor.id, term);
 		}
 	});

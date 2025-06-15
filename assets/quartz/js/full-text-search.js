@@ -29,7 +29,7 @@
 
   const formatForDisplay = (id) => ({
     id,
-    url: id,
+    url: id.toLowerCase(),
     title: content[id].title,
     content: content[id].content,
   })

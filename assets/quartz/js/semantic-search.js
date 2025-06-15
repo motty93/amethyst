@@ -10,7 +10,7 @@ function parseSearchResults(searchResults) {
   return searchResults.matches.map((m) => ({
     content: m.content,
     title: searchResults.objects[m.objectId].properties.properties._title.text,
-    url: searchResults.objects[m.objectId].properties.properties._url.text,
+    url: searchResults.objects[m.objectId].properties.properties._url.text.toLowerCase(),
   }))
 }
 
@@ -52,3 +52,4 @@ registerHandlers(
     }
   }),
 )
+
