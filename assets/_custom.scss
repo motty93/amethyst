@@ -1,3 +1,97 @@
 /* You can add custom styles here. */
 
 // @import "plugins/numbered";
+
+// グローバルにデフォルトの矢印を完全に削除
+.book-menu input.toggle + label::after,
+.book-menu input.toggle:checked + label::after {
+  content: none !important;
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+// BookCollapseSectionのスタイル改善
+.book-menu {
+  // チェックボックスを非表示
+  input.toggle {
+    display: none;
+  }
+
+  // ラベル全体をクリック可能に - デフォルトの矢印を完全に削除
+  input.toggle + label {
+    display: block;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+
+    // デフォルトの矢印を削除 (from _main.scss)
+    &::after {
+      content: none !important;
+      display: none !important;
+    }
+
+    // flexレイアウトを解除
+    &.flex {
+      display: block !important;
+    }
+
+    .book-collapse-toggle {
+      display: block;
+      position: relative;
+      padding-left: 1.2rem;
+
+      &::before {
+        content: '▶';
+        position: absolute;
+        left: 0;
+        top: 0.2rem;
+        font-size: 0.7rem;
+        transition: transform 0.2s ease;
+        color: var(--gray-500);
+      }
+
+      &:hover::before {
+        color: var(--color-link);
+      }
+    }
+  }
+
+  // チェックされた時の矢印の回転 - デフォルトの矢印も削除
+  input.toggle:checked + label {
+    &::after {
+      content: none !important;
+      display: none !important;
+    }
+
+    .book-collapse-toggle::before {
+      transform: rotate(90deg);
+    }
+  }
+
+  // サブメニューの表示制御
+  input.toggle ~ ul {
+    display: none;
+    margin-left: 0.5rem;
+  }
+
+  input.toggle:checked ~ ul {
+    display: block;
+  }
+
+  // リンクのスタイルを維持
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+// RTL対応 - デフォルトの矢印を無効化
+body[dir="rtl"] .book-menu {
+  input.toggle + label::after,
+  input.toggle:checked + label::after {
+    content: none !important;
+    display: none !important;
+  }
+}

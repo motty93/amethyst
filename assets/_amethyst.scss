@@ -117,9 +117,6 @@ pre::-webkit-scrollbar {
     opacity: 1;
 }
 
-.book-menu input.toggle+label::after {
-    font-size: 150%;
-}
 
 .book-menu input.toggle+label:hover {
     color: var(--secondary);
