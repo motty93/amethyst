@@ -108,20 +108,28 @@
 
   table {
     overflow: auto;
-    display: block;
+    display: table;
+    width: 100%;
     border-spacing: 0;
     border-collapse: collapse;
     margin-top: $padding-16;
     margin-bottom: $padding-16;
+    border: $padding-1 solid #ddd;
 
     tr th,
     tr td {
       padding: $padding-8 $padding-16;
-      border: $padding-1 solid var(--gray-200);
+      border: $padding-1 solid #ddd;
+      text-align: left;
+    }
+
+    tr th {
+      background: #f8f9fa;
+      font-weight: bolder;
     }
 
     tr:nth-child(2n) {
-      background: var(--gray-100);
+      background: #f8f9fa;
     }
   }
 
