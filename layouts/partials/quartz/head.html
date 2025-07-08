@@ -45,7 +45,7 @@
 {{partial "quartz/katex" .}}
   
 {{partial "quartz/mermaid" .}}
-{{$scripts := (slice "quartz/js/darkmode.js" "quartz/js/util.js")}}
+{{$scripts := (slice "quartz/js/darkmode.js" "quartz/js/util.js" "quartz/js/external-links.js")}}
 {{range $scripts}}
 {{$scriptname := .}}
 {{ $s := resources.Get $scriptname | resources.ExecuteAsTemplate $scriptname . | resources.Fingerprint "md5" | resources.Minify }}
@@ -107,6 +107,9 @@ resources.Minify }}
     const pathBase = siteBaseURL.pathname;
     const pathWindow = window.location.pathname;
     const isHome = pathBase == pathWindow;
+    
+    // Add target blank to external links
+    addTargetToExternalLinks();
 
     {{if $data.enableCodeBlockCopy | default $.Site.Params.enableCodeBlockCopy -}}
     addCopyButtons();
