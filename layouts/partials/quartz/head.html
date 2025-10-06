@@ -2,15 +2,25 @@
 {{ $config := cond (eq $.Site.Language.Lang "en") "config" (printf "config.%s" $.Site.Language.Lang) }}
 {{ $data := $.Site.Params }}
 <!-- Meta tags -->
+{{- $scratch := newScratch -}}
+{{- $siteTitle := $data.title | default $.Site.Params.title | default $.Site.Title -}}
+{{- $siteDescription := $data.description | default $.Site.Params.description | default $.Site.Description -}}
+{{- $scratch.Set "description" ($siteDescription | default $siteTitle) -}}
+{{- if not .IsHome -}}
+  {{- with .Params.description }}
+    {{- $scratch.Set "description" . -}}
+  {{- else if .Description }}
+    {{- $scratch.Set "description" .Description -}}
+  {{- else if .Summary }}
+    {{- $scratch.Set "description" (.Summary | plainify) -}}
+  {{- end -}}
+{{- end -}}
 <meta charset="UTF-8" />
 <meta
   name="description"
-  content="{{if .IsHome}}{{$data.description | default $.Site.Params.description}}{{else}}{{.Summary}}{{end}}"
+  content="{{ $scratch.Get "description" | plainify }}"
 />
-<title>
-  {{ if .Title }}{{ .Title }}{{ else }}{{ $.Site.Params.title | default $.Site.Params.title }}{{
-  end }}
-</title>
+<title>{{ if .IsHome }}{{ $siteTitle }}{{ else if .Title }}{{ .Title }} | {{ $siteTitle }}{{ else }}{{ $siteTitle }}{{ end }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <!-- HTML Favicon -->
@@ -45,7 +55,7 @@
 {{partial "quartz/katex" .}}
   
 {{partial "quartz/mermaid" .}}
-{{$scripts := (slice "quartz/js/darkmode.js" "quartz/js/util.js" "quartz/js/external-links.js")}}
+{{$scripts := (slice "quartz/js/darkmode.js" "quartz/js/util.js")}}
 {{range $scripts}}
 {{$scriptname := .}}
 {{ $s := resources.Get $scriptname | resources.ExecuteAsTemplate $scriptname . | resources.Fingerprint "md5" | resources.Minify }}
@@ -107,9 +117,6 @@ resources.Minify }}
     const pathBase = siteBaseURL.pathname;
     const pathWindow = window.location.pathname;
     const isHome = pathBase == pathWindow;
-    
-    // Add target blank to external links
-    addTargetToExternalLinks();
 
     {{if $data.enableCodeBlockCopy | default $.Site.Params.enableCodeBlockCopy -}}
     addCopyButtons();
