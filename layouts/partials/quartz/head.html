@@ -4,15 +4,25 @@
 <!-- Meta tags -->
 {{- $scratch := newScratch -}}
 {{- $siteTitle := $data.title | default $.Site.Params.title | default $.Site.Title -}}
-{{- $siteDescription := $data.description | default $.Site.Params.description | default $.Site.Description -}}
+{{- $siteDescription := $data.description | default $.Site.Params.description | default $siteTitle -}}
 {{- $scratch.Set "description" ($siteDescription | default $siteTitle) -}}
 {{- if not .IsHome -}}
   {{- with .Params.description }}
     {{- $scratch.Set "description" . -}}
-  {{- else if .Description }}
-    {{- $scratch.Set "description" .Description -}}
-  {{- else if .Summary }}
-    {{- $scratch.Set "description" (.Summary | plainify) -}}
+  {{- else -}}
+    {{- with .Description }}
+      {{- $scratch.Set "description" . -}}
+    {{- else -}}
+      {{- with .Summary }}
+        {{- $scratch.Set "description" (. | plainify) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $pageTitle := $siteTitle -}}
+{{- if not .IsHome -}}
+  {{- with .Title -}}
+    {{- $pageTitle = printf "%s | %s" . $siteTitle -}}
   {{- end -}}
 {{- end -}}
 <meta charset="UTF-8" />
@@ -20,7 +30,10 @@
   name="description"
   content="{{ $scratch.Get "description" | plainify }}"
 />
-<title>{{ if .IsHome }}{{ $siteTitle }}{{ else if .Title }}{{ .Title }} | {{ $siteTitle }}{{ else }}{{ $siteTitle }}{{ end }}</title>
+<title>{{ $pageTitle }}</title>
+{{- with .Permalink }}
+<link rel="canonical" href="{{ . }}">
+{{- end -}}
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <!-- HTML Favicon -->
