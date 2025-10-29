@@ -98,6 +98,11 @@ resources.Minify }}
 <script defer src="{{$callouts.Permalink}}"></script>
 {{ end }}
 
+{{ if $data.enableFooter | default $.Site.Params.enableFooter }}
+{{ $backlinks := resources.Get "quartz/js/backlinks.js" | resources.Fingerprint "md5" | resources.Minify }}
+<script src="{{$backlinks.Permalink}}"></script>
+{{ end }}
+
 <!--  Preload page vars  -->
 {{$linkIndex := resources.Get "indices/linkIndex.json" | resources.Fingerprint
 "md5" | resources.Minify | }} {{$contentIndex := resources.Get
@@ -154,6 +159,8 @@ resources.Minify }}
     const footer = document.getElementById("footer")
     if (footer) {
       const container = document.getElementById("graph-container")
+      const backlinksContainer = document.getElementById("backlinks-container")
+
       // retry if the graph is not ready
       if (!container) return requestAnimationFrame(render)
       // clear the graph in case there is anything within it
@@ -167,6 +174,10 @@ resources.Minify }}
           drawGlobal ? {{$.Site.Data.graphConfig.globalGraph}} : {{$.Site.Data.graphConfig.localGraph}}
         );
 
+      // Display backlinks
+      if (backlinksContainer && typeof displayBacklinks !== 'undefined') {
+        displayBacklinks({{strings.TrimRight "/" .Site.BaseURL}});
+      }
       }
     {{end}}
 

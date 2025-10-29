@@ -1,34 +1,6 @@
 <h3>{{ i18n "backlinks" }}</h3>
+<div id="backlinks-container">
   <ul class="backlinks">
-    {{$url := urls.Parse .Site.BaseURL }}
-    {{$host := strings.TrimRight "/" $url.Path }}
-    {{$curPage := strings.TrimPrefix $host (strings.TrimRight "/" .Page.RelPermalink)}}
-    {{$linkIndex := resources.Get "indices/linkIndex.json" | transform.Unmarshal}}
-    {{$contentTable := resources.Get "indices/contentIndex.json" | transform.Unmarshal}}
-    {{$inbound := ""}}
-    {{range $key, $value := $linkIndex.index.backlinks}}
-    {{if eq (strings.ToLower $key) (strings.ToLower $curPage)}}
-    {{$inbound = $value}}
-    {{end}}
-    {{end}}
-    {{if $inbound}}
-    {{range $k, $v := $inbound}}
-    {{$cleanedInbound := replace $v.source " " "-"}}
-    {{$ctx := $v.text}}
-    {{/* Convert to lowercase and URL decode for proper Hugo URL format */}}
-    {{$lowercaseUrl := strings.ToLower $cleanedInbound}}
-    {{$l := printf "%s%s/" $host $lowercaseUrl}}
-    {{$l = cond (eq $l "//") "/" $l}}
-    {{with (index $contentTable $cleanedInbound)}}
-    <li>
-      <a href="{{$l}}" data-ctx="{{$ctx}}" data-src="{{$lowercaseUrl}}"
-        class="internal-link">{{index (index . "title")}} <span class="context">({{$ctx}})</span></a>
-    </li>
-    {{end}}
-    {{end}}
-    {{else}}
-      <li>
-        {{ i18n "no_backlinks" }}
-      </li>
-      {{end}}
+    <li>{{ i18n "loading" | default "Loading..." }}</li>
   </ul>
+</div>
