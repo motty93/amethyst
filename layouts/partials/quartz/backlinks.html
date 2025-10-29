@@ -1,10 +1,10 @@
-<fh3>{{ i18n "backlinks" }}</h3>
+<h3>{{ i18n "backlinks" }}</h3>
   <ul class="backlinks">
     {{$url := urls.Parse .Site.BaseURL }}
     {{$host := strings.TrimRight "/" $url.Path }}
     {{$curPage := strings.TrimPrefix $host (strings.TrimRight "/" .Page.RelPermalink)}}
-    {{$linkIndex := getJSON "/assets/indices/linkIndex.json"}}
-    {{$contentTable := getJSON "/assets/indices/contentIndex.json"}}
+    {{$linkIndex := resources.Get "indices/linkIndex.json" | transform.Unmarshal}}
+    {{$contentTable := resources.Get "indices/contentIndex.json" | transform.Unmarshal}}
     {{$inbound := ""}}
     {{range $key, $value := $linkIndex.index.backlinks}}
     {{if eq (strings.ToLower $key) (strings.ToLower $curPage)}}

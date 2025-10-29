@@ -98,8 +98,14 @@ pre::-webkit-scrollbar {
 
 .title {
     color: var(--title);
-    font-size: 3rem;
+    font-size: 2rem;
     padding-bottom: 1rem;
+}
+
+@media screen and (max-width: $mobile-breakpoint) {
+    .title {
+        font-size: 1.5rem;
+    }
 }
 
 .book-toc-content {
